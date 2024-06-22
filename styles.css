@@ -1,0 +1,208 @@
+/* Include Google Fonts for Source Code Pro */
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap');
+
+@font-face {
+    font-family: 'ForwardAndBackward';
+    src: url("fonts/forward_and_backward.otf") format("opentype");
+}
+
+* {
+    box-sizing: border-box;
+    /* Ensure padding and border are included in the element's total width and height */
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'ForwardAndBackward', 'Courier New',
+        Courier,
+        'Source Code Pro',
+        monospace;
+
+    background: linear-gradient(135deg, #3970a3, #1e4569);
+    /* Example gradient */
+    font-size: 20px;
+    padding: 20px;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ffffff;
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.words-container {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 600px;
+    height: 170px;
+    /* Fixed height */
+    max-height: 150px;
+    /* Ensure the height doesn't shrink below this */
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+    padding: 10px;
+
+    /* Optional: background color for the word pool */
+    border-radius: 5px;
+
+}
+
+.word {
+    cursor: move;
+    font-size: 24px;
+    display: inline-block;
+    padding: 6px;
+    max-height: 40px;
+    /* Adjusted padding */
+    background-color: #fff;
+    color: #000;
+    margin: 2px;
+    /* Adjusted margin */
+    border-radius: 4px;
+    user-select: none;
+    touch-action: none;
+    /* Prevent default touch behaviors */
+    transition: transform 0.1s ease-in-out;
+    font-weight: 900;
+
+    /* Adjusted font size */
+}
+
+.word.dragging {
+    transform: scale(1.1);
+    box-shadow: none;
+    opacity: 0.8;
+    font-weight: 500;
+    /* Maintain the reduced font weight during dragging */
+}
+
+.board {
+    width: 100%;
+    max-width: 600px;
+    height: 400px;
+    /* border: 2px dashed #fff; */
+    position: relative;
+    background-color: #152b40;
+    /* Chalkboard color */
+    margin: 0 auto;
+    padding: 20px;
+    border-style: solid;
+    border-color: black;
+
+}
+
+.reset-button,
+.share-button,
+.download-button {
+    font-family: 'ForwardAndBackward', 'Courier New',
+        Courier,
+        'Source Code Pro',
+        monospace;
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 20px;
+    font-size: 18px;
+    color: #fff;
+    background-color: #123759;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.download-button:hover,
+.reset-button:hover,
+.share-button:hover {
+    background-color: #2980b9;
+}
+
+.download-button:active,
+.reset-button:active,
+.share-button:active {
+    background-color: #1c6d9b;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.download-button:focus,
+.reset-button:focus,
+.share-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.5);
+}
+
+.buttons {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.buttons2 {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.mirror-container {
+    transform: scaleX(-1);
+
+    width: 100%;
+
+    /* Flip horizontally */
+}
+
+.mirr {
+    width: 100%;
+    padding: 20px;
+    background-color: linear-gradient(-135deg, #feb47b, #ff7e5f);
+
+}
+
+.nomirr {
+    width: 100%;
+    padding: 20px;
+
+}
+
+.mirror-container .board {
+    max-width: 600px;
+}
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #123759;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+
+}
+
+a:hover {
+    color: #0fa2f1;
+}
