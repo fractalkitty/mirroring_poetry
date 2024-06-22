@@ -14,11 +14,7 @@
 }
 
 body {
-    font-family: 'ForwardAndBackward', 'Courier New',
-        Courier,
-        'Source Code Pro',
-        monospace;
-
+    font-family: 'ForwardAndBackward', 'Courier New', Courier, 'Source Code Pro', monospace;
     background: linear-gradient(135deg, #3970a3, #1e4569);
     /* Example gradient */
     font-size: 20px;
@@ -51,10 +47,7 @@ h1 {
     overflow-y: auto;
     /* Enable vertical scrolling */
     padding: 10px;
-
-    /* Optional: background color for the word pool */
     border-radius: 5px;
-
 }
 
 .word {
@@ -74,7 +67,6 @@ h1 {
     /* Prevent default touch behaviors */
     transition: transform 0.1s ease-in-out;
     font-weight: 900;
-
     /* Adjusted font size */
 }
 
@@ -98,16 +90,12 @@ h1 {
     padding: 20px;
     border-style: solid;
     border-color: black;
-
 }
 
 .reset-button,
 .share-button,
 .download-button {
-    font-family: 'ForwardAndBackward', 'Courier New',
-        Courier,
-        'Source Code Pro',
-        monospace;
+    font-family: 'ForwardAndBackward', 'Courier New', Courier, 'Source Code Pro', monospace;
     display: inline-block;
     padding: 10px 20px;
     margin-top: 20px;
@@ -163,9 +151,7 @@ h1 {
 
 .mirror-container {
     transform: scaleX(-1);
-
     width: 100%;
-
     /* Flip horizontally */
 }
 
@@ -173,13 +159,11 @@ h1 {
     width: 100%;
     padding: 20px;
     background-color: linear-gradient(-135deg, #feb47b, #ff7e5f);
-
 }
 
 .nomirr {
     width: 100%;
     padding: 20px;
-
 }
 
 .mirror-container .board {
@@ -200,9 +184,73 @@ h1 {
 a {
     color: white;
     text-decoration: none;
-
 }
 
 a:hover {
     color: #0fa2f1;
+}
+
+/* Media queries for smaller screens */
+@media (max-width: 768px) {
+    body {
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    .word {
+        font-size: 20px;
+        padding: 4px;
+        max-height: 30px;
+    }
+
+    .reset-button,
+    .share-button,
+    .download-button {
+        font-size: 16px;
+        padding: 8px 16px;
+    }
+
+    .buttons {
+        padding: 10px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 5px;
+    }
+
+    .buttons2 {
+        padding: 10px;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+        padding: 5px;
+    }
+
+    .word {
+        font-size: 18px;
+        padding: 2px;
+        max-height: 25px;
+    }
+
+    .reset-button,
+    .share-button,
+    .download-button {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+
+    .buttons {
+        padding: 5px;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 3px;
+    }
+
+    .buttons2 {
+        padding: 5px;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 3px;
+    }
 }
