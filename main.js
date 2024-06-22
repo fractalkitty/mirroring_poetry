@@ -27,10 +27,7 @@ const addEventListeners = (board, boardPadding, mirrorBoard, wordsContainer, sel
 
     addButtonListeners('download-button', () => downloadBoardAsImage(board));
     addButtonListeners('reset-button', () => resetBoard(board, mirrorBoard));
-
-
     addButtonListeners('download-button2', downloadMirroredBoardAsImage);
-
 };
 
 const createWordElement = (text) => {
@@ -76,6 +73,10 @@ const handleDrop = (event, boardPadding, board, mirrorBoard, wordsContainer, sel
         if (wordIndex !== -1) {
             selectedWords[wordIndex] = newWord;
             wordsContainer.children[wordIndex].textContent = newWord;
+        } else {
+            selectedWords.push(newWord);
+            const newWordElement = createWordElement(newWord);
+            wordsContainer.appendChild(newWordElement);
         }
     }
 
@@ -94,11 +95,9 @@ const downloadBoardAsImage = (boardElement) => {
             link.href = url;
             link.download = 'poem.png';
 
-            // Append link to body and trigger download
             document.body.appendChild(link);
             link.click();
 
-            // Clean up and revoke object URL after download
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
         });
@@ -117,11 +116,9 @@ const downloadMirroredBoardAsImage = () => {
             link.href = url;
             link.download = 'mirror_poem.png';
 
-            // Append link to body and trigger download
             document.body.appendChild(link);
             link.click();
 
-            // Clean up and revoke object URL after download
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
         });
