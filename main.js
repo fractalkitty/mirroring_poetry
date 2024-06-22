@@ -138,7 +138,17 @@ const downloadMirroredBoardAsImage = () => {
 };
 
 const resetBoard = (boardElement, mirrorBoard) => {
-    while (boardElement.firstChild) boardElement.removeChild(boardElement.firstChild);
+    // Clear the board
+    while (boardElement.firstChild) {
+        boardElement.removeChild(boardElement.firstChild);
+    }
+
+    // Clear the words container
+    const wordsContainer = document.getElementById('words');
+    while (wordsContainer.firstChild) {
+        wordsContainer.removeChild(wordsContainer.firstChild);
+    }
+
     updateMirrorBoard(boardElement, mirrorBoard);
 };
 
