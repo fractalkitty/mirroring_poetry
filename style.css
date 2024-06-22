@@ -54,7 +54,7 @@ h1 {
     cursor: move;
     font-size: 24px;
     display: inline-block;
-    padding: 6px;
+    padding: 4px;
     max-height: 40px;
     /* Adjusted padding */
     background-color: #fff;
@@ -199,7 +199,7 @@ a:hover {
 
     .word {
         font-size: 20px;
-        padding: 6px;
+        padding: 4px;
         max-height: 30px;
     }
 
@@ -231,7 +231,7 @@ a:hover {
 
     .word {
         font-size: 18px;
-        padding: 6px;
+        padding: 4px;
         max-height: 25px;
     }
 
