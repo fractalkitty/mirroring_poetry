@@ -200,7 +200,7 @@ a:hover {
     .word {
         font-size: 20px;
         padding: 4px;
-        max-height: 30px;
+        max-height: 35px;
     }
 
     .reset-button,
@@ -232,7 +232,7 @@ a:hover {
     .word {
         font-size: 18px;
         padding: 4px;
-        max-height: 25px;
+        max-height: 30px;
     }
 
     .reset-button,
