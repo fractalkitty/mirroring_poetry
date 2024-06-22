@@ -14,7 +14,7 @@ const initializeWords = (wordsContainer, count) => {
     const remainingWords = shuffledWords.slice(count);
 
     selectedWords.forEach(word => {
-        const wordElement = createWordElement(word, remainingWords);
+        const wordElement = createWordElement(word, remainingWords, selectedWords);
         wordsContainer.appendChild(wordElement);
     });
 
@@ -26,12 +26,15 @@ const addEventListeners = (board, boardPadding, mirrorBoard, wordsContainer, sel
     board.addEventListener('drop', event => handleDrop(event, boardPadding, board, mirrorBoard, wordsContainer, selectedWords, remainingWords));
 
     addButtonListeners('download-button', () => downloadBoardAsImage(board));
-    addButtonListeners('reset-button', () => resetBoard(board, mirrorBoard));
+    addButtonListeners('reset-button', () => {
+        resetBoard(board, mirrorBoard);
+        ({ selectedWords, remainingWords } = initializeWords(wordsContainer, 15));  // reinitialize words
+    });
 
     addButtonListeners('download-button2', downloadMirroredBoardAsImage);
 };
 
-const createWordElement = (text, remainingWords, isOnBoard = false) => {
+const createWordElement = (text, remainingWords, selectedWords, isOnBoard = false) => {
     const wordElement = document.createElement('div');
     wordElement.classList.add('word');
     wordElement.textContent = text;
@@ -42,15 +45,15 @@ const createWordElement = (text, remainingWords, isOnBoard = false) => {
     wordElement.addEventListener('dragend', handleDragEnd);
 
     if (!isOnBoard) {
-        wordElement.addEventListener('dblclick', () => handleDoubleClick(wordElement, remainingWords));
+        wordElement.addEventListener('dblclick', () => handleDoubleClickInPool(wordElement, remainingWords, selectedWords));
     } else {
         wordElement.addEventListener('dblclick', () => {
-            wordElement.remove();
+            removeWordElement(wordElement);
             updateMirrorBoard(document.getElementById('board'), document.getElementById('mirror-board'));
         });
     }
 
-    addTouchEventListeners(wordElement, remainingWords, isOnBoard);
+    addTouchEventListeners(wordElement, remainingWords, selectedWords, isOnBoard);
 
     return wordElement;
 };
@@ -68,7 +71,7 @@ const handleDrop = (event, boardPadding, board, mirrorBoard, wordsContainer, sel
     const data = JSON.parse(event.dataTransfer.getData('text/plain'));
     const { text, offsetX, offsetY } = data;
     const { left, top } = board.getBoundingClientRect();
-    const wordElement = createWordElement(text, remainingWords, true);
+    const wordElement = createWordElement(text, remainingWords, selectedWords, true);
 
     wordElement.style.position = 'absolute';
     wordElement.style.left = `${event.clientX - left - offsetX - boardPadding}px`;
@@ -87,7 +90,7 @@ const handleDrop = (event, boardPadding, board, mirrorBoard, wordsContainer, sel
     }
 
     wordElement.addEventListener('dblclick', () => {
-        wordElement.remove();
+        removeWordElement(wordElement);
         updateMirrorBoard(board, mirrorBoard);
     });
 };
@@ -164,28 +167,35 @@ const handleDragEnd = (event) => {
     event.target.classList.remove('dragging');
 };
 
-const handleDoubleClick = (wordElement, remainingWords) => {
-    if (remainingWords.length > 0) {
+const handleDoubleClickInPool = (wordElement, remainingWords, selectedWords) => {
+    const parentElement = wordElement.parentElement;
+    if (parentElement && parentElement.id === 'words' && remainingWords.length > 0) {
         const oldWord = wordElement.textContent;
         const newWord = remainingWords.shift();
         wordElement.textContent = newWord;
         remainingWords.push(oldWord);
+
+        // Update the selectedWords array to reflect the change
+        const wordIndex = Array.from(parentElement.children).indexOf(wordElement);
+        if (wordIndex !== -1) {
+            selectedWords[wordIndex] = newWord;
+        }
     }
 };
 
-const addTouchEventListeners = (wordElement, remainingWords, isOnBoard) => {
+const addTouchEventListeners = (wordElement, remainingWords, selectedWords, isOnBoard) => {
     let lastTap = 0;
 
     wordElement.addEventListener('touchstart', (event) => handleTouchStart(event, wordElement, isOnBoard));
     wordElement.addEventListener('touchmove', handleTouchMove);
-    wordElement.addEventListener('touchend', (event) => handleTouchEnd(event, wordElement, remainingWords, isOnBoard));
+    wordElement.addEventListener('touchend', (event) => handleTouchEnd(event, wordElement, remainingWords, selectedWords, isOnBoard));
 
     if (isOnBoard) {
         wordElement.addEventListener('touchend', (event) => {
             const currentTime = new Date().getTime();
             const tapLength = currentTime - lastTap;
             if (tapLength < 500 && tapLength > 0) {
-                wordElement.remove();
+                removeWordElement(wordElement);
                 updateMirrorBoard(document.getElementById('board'), document.getElementById('mirror-board'));
             }
             lastTap = currentTime;
@@ -195,7 +205,7 @@ const addTouchEventListeners = (wordElement, remainingWords, isOnBoard) => {
             const currentTime = new Date().getTime();
             const tapLength = currentTime - lastTap;
             if (tapLength < 500 && tapLength > 0) {
-                handleDoubleClick(wordElement, remainingWords);
+                handleDoubleClickInPool(wordElement, remainingWords, selectedWords);
             }
             lastTap = currentTime;
         });
@@ -241,45 +251,53 @@ const handleTouchMove = (event) => {
     }
 };
 
-const handleTouchEnd = (event, wordElement, remainingWords, isOnBoard) => {
+const handleTouchEnd = (event, wordElement, remainingWords, selectedWords, isOnBoard) => {
     const original = event.target;
     const clone = original.__clone;
 
     if (clone) {
         const board = document.getElementById('board');
-        const mirrorBoard = document.getElementById('mirror-board');
-        const { left, top, width, height } = board.getBoundingClientRect();
+        const { left, top } = board.getBoundingClientRect();
         const dropX = parseFloat(clone.style.left) - left;
         const dropY = parseFloat(clone.style.top) - top;
 
-        if (dropX >= 0 && dropY >= 0 && dropX <= width && dropY <= height) {
-            const newWordElement = createWordElement(original.innerText, remainingWords, true);
+        let x = dropX;
+        let y = dropY;
+
+        // Ensure the word is fully within the board's boundaries
+        const wordWidth = clone.offsetWidth;
+        const wordHeight = clone.offsetHeight;
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+        if (x + wordWidth > board.clientWidth) x = board.clientWidth - wordWidth;
+        if (y + wordHeight > board.clientHeight) y = board.clientHeight - wordHeight;
+
+        if (x >= 0 && y >= 0 && x + wordWidth <= board.clientWidth && y + wordHeight <= board.clientHeight) {
+            const newWordElement = createWordElement(original.innerText, remainingWords, selectedWords, true);
             newWordElement.style.position = 'absolute';
-            newWordElement.style.left = `${dropX}px`;
-            newWordElement.style.top = `${dropY}px`;
+            newWordElement.style.left = `${x}px`;
+            newWordElement.style.top = `${y}px`;
             board.appendChild(newWordElement);
-            updateMirrorBoard(board, mirrorBoard);
+            updateMirrorBoard(board, document.getElementById('mirror-board'));
 
-            const remainingWordsArray = Array.from(document.getElementById('words').children).map(child => child.textContent);
-            const selectedWordsArray = Array.from(document.getElementById('board').children).map(child => child.textContent);
-
-            if (remainingWords.length > 0) {
+            if (original.parentElement.id === 'words' && remainingWords.length > 0) {
                 const newWord = remainingWords.shift();
-                const wordIndex = selectedWordsArray.indexOf(original.innerText);
+                const wordIndex = Array.from(original.parentElement.children).indexOf(original);
                 if (wordIndex !== -1) {
-                    selectedWordsArray[wordIndex] = newWord;
-                    document.getElementById('words').children[wordIndex].textContent = newWord;
+                    original.parentElement.children[wordIndex].textContent = newWord;
+                    selectedWords[wordIndex] = newWord;
                 }
             }
-
-            newWordElement.addEventListener('dblclick', () => {
-                newWordElement.remove();
-                updateMirrorBoard(board, mirrorBoard);
-            });
         }
 
         clone.remove();
         original.__cloneCreated = false;
+    }
+};
+
+const removeWordElement = (wordElement) => {
+    if (wordElement.parentElement) {
+        wordElement.parentElement.removeChild(wordElement);
     }
 };
 
