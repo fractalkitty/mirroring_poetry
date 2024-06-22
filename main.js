@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const board = document.getElementById('board');
     const wordsContainer = document.getElementById('words');
     const mirrorBoard = document.getElementById('mirror-board');
-    const boardPadding = parseFloat(window.getComputedStyle(board).paddingLeft) / 2;
+    const boardPadding = parseFloat(window.getComputedStyle(board).paddingLeft) / 2 - 6;
 
     let { selectedWords, remainingWords } = initializeWords(wordsContainer, 15);
     addEventListeners(board, boardPadding, mirrorBoard, wordsContainer, selectedWords, remainingWords);
