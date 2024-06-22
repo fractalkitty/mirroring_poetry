@@ -27,10 +27,10 @@ const addEventListeners = (board, boardPadding, mirrorBoard, wordsContainer, sel
 
     addButtonListeners('download-button', () => downloadBoardAsImage(board));
     addButtonListeners('reset-button', () => resetBoard(board, mirrorBoard));
-    addButtonListeners('share-button', () => shareBoard(board));
+
 
     addButtonListeners('download-button2', downloadMirroredBoardAsImage);
-    addButtonListeners('share-button2', shareMirroredBoard);
+
 };
 
 const createWordElement = (text) => {
@@ -87,20 +87,44 @@ const downloadBoardAsImage = (boardElement) => {
     words.forEach(word => word.style.zIndex = 1);
 
     html2canvas(boardElement, { scale: 10 }).then(canvas => {
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL('image/png');
-        link.download = 'poem.png';
+        canvas.toBlob(blob => {
+            const url = URL.createObjectURL(blob);
 
-        if (navigator.userAgent.match(/(iPad|iPhone|iPod)/g)) {
-            const newWindow = window.open(canvas.toDataURL('image/png'), '_blank');
-            newWindow.focus();
-        } else {
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'poem.png';
+
+            // Append link to body and trigger download
             document.body.appendChild(link);
             link.click();
-            document.body.removeChild(link);
-        }
 
-        words.forEach(word => word.style.zIndex = 10);
+            // Clean up and revoke object URL after download
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        });
+    }).catch(console.error);
+
+    words.forEach(word => word.style.zIndex = 10);
+};
+
+const downloadMirroredBoardAsImage = () => {
+    const mirrorBoardContainer = document.getElementById('mirror-board-container');
+    html2canvas(mirrorBoardContainer, { scale: 10 }).then(canvas => {
+        canvas.toBlob(blob => {
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'mirror_poem.png';
+
+            // Append link to body and trigger download
+            document.body.appendChild(link);
+            link.click();
+
+            // Clean up and revoke object URL after download
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        });
     }).catch(console.error);
 };
 
@@ -109,28 +133,28 @@ const resetBoard = (boardElement, mirrorBoard) => {
     updateMirrorBoard(boardElement, mirrorBoard);
 };
 
-const shareBoard = (boardElement) => {
-    const words = boardElement.querySelectorAll('.word');
-    words.forEach(word => word.style.zIndex = 1);
+// const shareBoard = (boardElement) => {
+//     const words = boardElement.querySelectorAll('.word');
+//     words.forEach(word => word.style.zIndex = 1);
 
-    html2canvas(boardElement, { scale: 10 }).then(canvas => {
-        canvas.toBlob(blob => {
-            const file = new File([blob], "poem.png", { type: "image/png" });
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                navigator.share({ files: [file], title: 'my poem', text: 'Check out my poem!' });
-            } else {
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(file);
-                link.download = 'poem.png';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                alert('Your browser does not support direct sharing. The image has been downloaded. Please share it manually.');
-            }
-        });
-        words.forEach(word => word.style.zIndex = 10);
-    }).catch(console.error);
-};
+//     html2canvas(boardElement, { scale: 10 }).then(canvas => {
+//         canvas.toBlob(blob => {
+//             const file = new File([blob], "poem.png", { type: "image/png" });
+//             if (navigator.canShare && navigator.canShare({ files: [file] })) {
+//                 navigator.share({ files: [file], title: 'my poem', text: 'Check out my poem!' });
+//             } else {
+//                 const link = document.createElement('a');
+//                 link.href = URL.createObjectURL(file);
+//                 link.download = 'poem.png';
+//                 document.body.appendChild(link);
+//                 link.click();
+//                 document.body.removeChild(link);
+//                 alert('Your browser does not support direct sharing. The image has been downloaded. Please share it manually.');
+//             }
+//         });
+//         words.forEach(word => word.style.zIndex = 10);
+//     }).catch(console.error);
+// };
 
 const addButtonListeners = (buttonId, callback) => {
     const button = document.getElementById(buttonId);
@@ -264,32 +288,22 @@ const updateMirrorBoard = (board, mirrorBoard) => {
     mirrorBoard.innerHTML = board.innerHTML;
 };
 
-const downloadMirroredBoardAsImage = () => {
-    const mirrorBoardContainer = document.getElementById('mirror-board-container');
-    html2canvas(mirrorBoardContainer, { scale: 10 }).then(canvas => {
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL('image/png');
-        link.download = 'mirror_poem.png';
-        link.click();
-    }).catch(console.error);
-};
-
-const shareMirroredBoard = () => {
-    const mirrorBoardContainer = document.getElementById('mirror-board-container');
-    html2canvas(mirrorBoardContainer, { scale: 10 }).then(canvas => {
-        canvas.toBlob(blob => {
-            const file = new File([blob], "mirror_poem.png", { type: "image/png" });
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                navigator.share({ files: [file], title: 'my poem', text: 'Check out my poem!' });
-            } else {
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(file);
-                link.download = 'mirror_poem.png';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                alert('Your browser does not support direct sharing. The image has been downloaded. Please share it manually.');
-            }
-        });
-    }).catch(console.error);
-};
+// const shareMirroredBoard = () => {
+//     const mirrorBoardContainer = document.getElementById('mirror-board-container');
+//     html2canvas(mirrorBoardContainer, { scale: 10 }).then(canvas => {
+//         canvas.toBlob(blob => {
+//             const file = new File([blob], "mirror_poem.png", { type: "image/png" });
+//             if (navigator.canShare && navigator.canShare({ files: [file] })) {
+//                 navigator.share({ files: [file], title: 'my poem', text: 'Check out my poem!' });
+//             } else {
+//                 const link = document.createElement('a');
+//                 link.href = URL.createObjectURL(file);
+//                 link.download = 'mirror_poem.png';
+//                 document.body.appendChild(link);
+//                 link.click();
+//                 document.body.removeChild(link);
+//                 alert('Your browser does not support direct sharing. The image has been downloaded. Please share it manually.');
+//             }
+//         });
+//     }).catch(console.error);
+// };

@@ -134,7 +134,7 @@ h1 {
 .buttons {
     padding: 20px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
     max-width: 600px;
     margin: 0 auto;
@@ -204,7 +204,7 @@ a:hover {
     }
 
     .reset-button,
-    .share-button,
+
     .download-button {
         font-size: 16px;
         padding: 8px 16px;
@@ -236,7 +236,7 @@ a:hover {
     }
 
     .reset-button,
-    .share-button,
+
     .download-button {
         font-size: 14px;
         padding: 6px 12px;
