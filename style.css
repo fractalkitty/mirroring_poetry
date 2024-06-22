@@ -103,8 +103,7 @@ h1 {
     font-family: 'ForwardAndBackward', 'Courier New', Courier, 'Source Code Pro', monospace;
     display: inline-block;
     /* padding: 10px 20px; */
-    max-width: 80px;
-
+    width: 80px;
     font-size: 25px;
     color: #595959;
     background-color: #ffffff;
