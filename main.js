@@ -133,28 +133,7 @@ const resetBoard = (boardElement, mirrorBoard) => {
     updateMirrorBoard(boardElement, mirrorBoard);
 };
 
-// const shareBoard = (boardElement) => {
-//     const words = boardElement.querySelectorAll('.word');
-//     words.forEach(word => word.style.zIndex = 1);
 
-//     html2canvas(boardElement, { scale: 10 }).then(canvas => {
-//         canvas.toBlob(blob => {
-//             const file = new File([blob], "poem.png", { type: "image/png" });
-//             if (navigator.canShare && navigator.canShare({ files: [file] })) {
-//                 navigator.share({ files: [file], title: 'my poem', text: 'Check out my poem!' });
-//             } else {
-//                 const link = document.createElement('a');
-//                 link.href = URL.createObjectURL(file);
-//                 link.download = 'poem.png';
-//                 document.body.appendChild(link);
-//                 link.click();
-//                 document.body.removeChild(link);
-//                 alert('Your browser does not support direct sharing. The image has been downloaded. Please share it manually.');
-//             }
-//         });
-//         words.forEach(word => word.style.zIndex = 10);
-//     }).catch(console.error);
-// };
 
 const addButtonListeners = (buttonId, callback) => {
     const button = document.getElementById(buttonId);
@@ -287,23 +266,3 @@ const handleTouchEnd = (event) => {
 const updateMirrorBoard = (board, mirrorBoard) => {
     mirrorBoard.innerHTML = board.innerHTML;
 };
-
-// const shareMirroredBoard = () => {
-//     const mirrorBoardContainer = document.getElementById('mirror-board-container');
-//     html2canvas(mirrorBoardContainer, { scale: 10 }).then(canvas => {
-//         canvas.toBlob(blob => {
-//             const file = new File([blob], "mirror_poem.png", { type: "image/png" });
-//             if (navigator.canShare && navigator.canShare({ files: [file] })) {
-//                 navigator.share({ files: [file], title: 'my poem', text: 'Check out my poem!' });
-//             } else {
-//                 const link = document.createElement('a');
-//                 link.href = URL.createObjectURL(file);
-//                 link.download = 'mirror_poem.png';
-//                 document.body.appendChild(link);
-//                 link.click();
-//                 document.body.removeChild(link);
-//                 alert('Your browser does not support direct sharing. The image has been downloaded. Please share it manually.');
-//             }
-//         });
-//     }).catch(console.error);
-// };
