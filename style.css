@@ -139,12 +139,12 @@ h1 {
 }
 
 .buttons {
-    padding: 20px;
+
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
     max-width: 200px;
-    margin: auto;
+    margin: 10px auto;
 
 }
 
@@ -208,6 +208,10 @@ a:hover {
         padding: 10px;
     }
 
+    h1 {
+        font-size: 24px;
+    }
+
     .word {
         font-size: 20px;
         padding: 6px;
@@ -221,23 +225,17 @@ a:hover {
         padding: 8px 16px;
     }
 
-    .buttons {
-        padding: 10px;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 5px;
-    }
 
-    .buttons2 {
-        padding: 10px;
-        grid-template-columns: repeat(1, 1fr);
-        gap: 5px;
-    }
 }
 
 @media (max-width: 480px) {
     body {
         font-size: 14px;
         padding: 5px;
+    }
+
+    h1 {
+        font-size: 20px;
     }
 
     .word {
@@ -253,15 +251,5 @@ a:hover {
         padding: 6px 12px;
     }
 
-    .buttons {
-        padding: 5px;
-        grid-template-columns: repeat(1, 1fr);
-        gap: 3px;
-    }
 
-    .buttons2 {
-        padding: 5px;
-        grid-template-columns: repeat(1, 1fr);
-        gap: 3px;
-    }
 }
