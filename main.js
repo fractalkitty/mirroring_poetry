@@ -221,6 +221,7 @@ const handleTouchStart = (event, wordElement, isOnBoard) => {
     wordElement.__initialTouchX = touch.clientX;
     wordElement.__initialTouchY = touch.clientY;
     wordElement.__cloneCreated = false;
+    wordElement.__singleTap = true;  // Assume single tap initially
     if (isOnBoard) {
         event.preventDefault();
     }
@@ -242,6 +243,7 @@ const handleTouchMove = (event) => {
         document.body.appendChild(clone);
         original.__clone = clone;
         original.__cloneCreated = true;
+        original.__singleTap = false;  // Detected movement, so it's not a single tap
     }
 
     if (original.__cloneCreated) {
@@ -255,7 +257,11 @@ const handleTouchEnd = (event, wordElement, remainingWords, selectedWords, isOnB
     const original = event.target;
     const clone = original.__clone;
 
-    if (clone) {
+    if (original.__singleTap) {
+        // If it was a single tap, we handle it as a double-click in the pool
+        handleDoubleClickInPool(original, remainingWords, selectedWords);
+    } else if (clone) {
+        // Handle dragging and dropping
         const board = document.getElementById('board');
         const { left, top } = board.getBoundingClientRect();
         const dropX = parseFloat(clone.style.left) - left;
@@ -279,15 +285,6 @@ const handleTouchEnd = (event, wordElement, remainingWords, selectedWords, isOnB
             newWordElement.style.top = `${y}px`;
             board.appendChild(newWordElement);
             updateMirrorBoard(board, document.getElementById('mirror-board'));
-
-            if (original.parentElement.id === 'words' && remainingWords.length > 0) {
-                const newWord = remainingWords.shift();
-                const wordIndex = Array.from(original.parentElement.children).indexOf(original);
-                if (wordIndex !== -1) {
-                    original.parentElement.children[wordIndex].textContent = newWord;
-                    selectedWords[wordIndex] = newWord;
-                }
-            }
         }
 
         clone.remove();
