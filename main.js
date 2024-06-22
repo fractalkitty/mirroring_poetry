@@ -221,7 +221,7 @@ const handleTouchStart = (event, wordElement, isOnBoard) => {
     wordElement.__initialTouchX = touch.clientX;
     wordElement.__initialTouchY = touch.clientY;
     wordElement.__cloneCreated = false;
-    wordElement.__singleTap = true;  // Assume single tap initially
+    wordElement.__singleTap = true; // Assume single tap initially
     if (isOnBoard) {
         event.preventDefault();
     }
@@ -243,7 +243,7 @@ const handleTouchMove = (event) => {
         document.body.appendChild(clone);
         original.__clone = clone;
         original.__cloneCreated = true;
-        original.__singleTap = false;  // Detected movement, so it's not a single tap
+        original.__singleTap = false; // Detected movement, so it's not a single tap
     }
 
     if (original.__cloneCreated) {
@@ -258,14 +258,16 @@ const handleTouchEnd = (event, wordElement, remainingWords, selectedWords, isOnB
     const clone = original.__clone;
 
     if (original.__singleTap) {
-        // If it was a single tap, we handle it as a double-click in the pool
-        handleDoubleClickInPool(original, remainingWords, selectedWords);
-    } else if (clone) {
-        // Handle dragging and dropping
+        // If it was a single tap, ignore to prevent unnecessary actions
+        return;
+    }
+
+    if (clone) {
         const board = document.getElementById('board');
         const { left, top } = board.getBoundingClientRect();
-        const dropX = parseFloat(clone.style.left) - left;
-        const dropY = parseFloat(clone.style.top) - top;
+        const cloneRect = clone.getBoundingClientRect();
+        const dropX = cloneRect.left - left - 3;
+        const dropY = cloneRect.top - top - 3;
 
         let x = dropX;
         let y = dropY;
@@ -285,12 +287,34 @@ const handleTouchEnd = (event, wordElement, remainingWords, selectedWords, isOnB
             newWordElement.style.top = `${y}px`;
             board.appendChild(newWordElement);
             updateMirrorBoard(board, document.getElementById('mirror-board'));
+
+            if (original.parentElement.id === 'words' && remainingWords.length > 0) {
+                const newWord = remainingWords.shift();
+                const wordIndex = Array.from(original.parentElement.children).indexOf(original);
+                if (wordIndex !== -1) {
+                    original.parentElement.children[wordIndex].textContent = newWord;
+                    selectedWords[wordIndex] = newWord;
+                }
+            }
         }
 
         clone.remove();
         original.__cloneCreated = false;
     }
+
+    if (isOnBoard) {
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - original.__lastTapTime;
+        if (tapLength < 500 && tapLength > 0) {
+            removeWordElement(wordElement);
+            updateMirrorBoard(document.getElementById('board'), document.getElementById('mirror-board'));
+        }
+        original.__lastTapTime = currentTime;
+    }
 };
+
+
+
 
 const removeWordElement = (wordElement) => {
     if (wordElement.parentElement) {
