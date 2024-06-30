@@ -49,7 +49,7 @@ const createWordElement = (text, remainingWords, selectedWords, isOnBoard = fals
     } else {
         wordElement.addEventListener('dblclick', () => {
             removeWordElement(wordElement);
-            updateMirrorBoard(document.getElementById('board'), document.getElementById('mirror-board'));
+            updateMirrorBoard(document.getElementById('board'), document.getElementById('mirror-board-container'));
         });
     }
 
@@ -119,7 +119,7 @@ const downloadBoardAsImage = (boardElement) => {
 };
 
 const downloadMirroredBoardAsImage = () => {
-    const mirrorBoardContainer = document.getElementById('mirror-board');
+    const mirrorBoardContainer = document.getElementById('mirror-board-container');
     html2canvas(mirrorBoardContainer, { scale: 10 }).then(canvas => {
         canvas.toBlob(blob => {
             const url = URL.createObjectURL(blob);
@@ -332,6 +332,27 @@ const removeWordElement = (wordElement) => {
     }
 };
 
+
+
 const updateMirrorBoard = (board, mirrorBoard) => {
-    mirrorBoard.innerHTML = board.innerHTML;
+    // Clear the mirror board
+    mirrorBoard.innerHTML = '';
+
+    // Clone the board content
+    Array.from(board.children).forEach(child => {
+        const clonedChild = child.cloneNode(true);
+        mirrorBoard.appendChild(clonedChild);
+    });
+
+    // Ensure all styles are copied over
+    const originalStyles = window.getComputedStyle(board);
+    for (let style of originalStyles) {
+        mirrorBoard.style[style] = originalStyles[style];
+    }
+
+    // Remove dragging class if present
+    const draggedElement = mirrorBoard.querySelector('.dragging');
+    if (draggedElement) {
+        draggedElement.classList.remove('dragging');
+    }
 };
