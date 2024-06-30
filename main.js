@@ -119,7 +119,7 @@ const downloadBoardAsImage = (boardElement) => {
 };
 
 const downloadMirroredBoardAsImage = () => {
-    const mirrorBoardContainer = document.getElementById('mirror-board2');
+    const mirrorBoardContainer = document.getElementById('mirror-board');
     html2canvas(mirrorBoardContainer, { scale: 10 }).then(canvas => {
         canvas.toBlob(blob => {
             const url = URL.createObjectURL(blob);
